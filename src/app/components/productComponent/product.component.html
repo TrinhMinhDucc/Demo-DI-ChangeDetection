@@ -1,0 +1,180 @@
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>
+<div class="product-list">
+    <h2>List Products</h2>
+
+    <div class="mb-3">
+        <span class="p-input-icon-left">
+            <i class="pi pi-search"></i>
+            <input pInputText type="text" [(ngModel)]="searchValue" (input)="searchProducts($event)" placeholder="Search keyword" />
+        </span>
+        <button pButton type="button"  icon="pi pi-plus"  (click)="openCreateDialog()"></button>
+    </div>
+
+    <p-table [value]="products" [paginator]="true" [rows]="10" [globalFilterFields]="['pId', 'name', 'description', 'category', 'price']" [globalFilter]="globalFilter">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="pId">ID <p-sortIcon field="pId"></p-sortIcon></th>
+                <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
+                <th>Description</th>
+                <th pSortableColumn="category">Category <p-sortIcon field="category"></p-sortIcon></th>
+                <th pSortableColumn="price">Price <p-sortIcon field="price"></p-sortIcon></th>
+                <th>Image</th>
+                <th>Actions</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-product>
+            <tr>
+                <td>{{product.pId}}</td>
+                <td>{{product.name}}</td>
+                <td>{{product.description}}</td>
+                <td>{{product.category}}</td>
+                <td>{{product.price | currency}}</td>
+                <td><img [src]="product.imageUrl" style="height: 50px; width: 50px;"></td>
+                <td>
+                    <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2" (click)="openEditDialog(product)"></button>
+                    <button pButton icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="confirmDeleteProduct(product.pId)"></button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<!-- Create Product Dialog -->
+<p-dialog [(visible)]="createDialogVisible" [modal]="true" [closable]="false" [style]="{width: '50vw'}">
+    <p-header>
+        <span>Create Product</span>
+    </p-header>
+
+    <!-- <div class="p-fluid p-formgrid p-grid">
+        <div class="p-field mb-2 p-col-12 p-md-6">
+            <label for="newId">ID</label>
+            <input id="newId" [(ngModel)]="newProduct.pId" pInputText (input)="validateForm()" />
+            <small *ngIf="!newProduct.pId" class="p-error">*</small>
+          </div>
+          <div class="p-field mb-2 p-col-12 p-md-6">
+            <label for="newName">Product Name</label>
+            <input id="newName" [(ngModel)]="newProduct.name" pInputText (input)="validateForm()" />
+            <small *ngIf="!newProduct.name" class="p-error">*</small>
+          </div>
+          <div class="p-field mb-2 p-col-12 p-md-6">
+            <label for="newDescription">Description</label>
+            <input id="newDescription" [(ngModel)]="newProduct.description" pInputText (input)="validateForm()" />
+            <small *ngIf="!newProduct.description" class="p-error">*</small>
+          </div>
+          <div class="p-field mb-2 p-col-12 p-md-6">
+            <label for="newPrice">Price</label>
+            <input id="newPrice" [(ngModel)]="newProduct.price" pInputText type="number" (input)="validateForm()" />
+            <small *ngIf="!newProduct.price" class="p-error">*</small>
+          </div>
+          <div class="p-field mb-2 p-col-12 p-md-6">
+            <label for="newCategory">Category</label>
+            <input id="newCategory" [(ngModel)]="newProduct.category" pInputText (input)="validateForm()" />
+            <small *ngIf="!newProduct.category" class="p-error">*</small>
+          </div>
+          <div class="p-field mb-2 p-col-12 p-md-6">
+            <label for="newImageUrl">Image URL</label>
+            <input id="newImageUrl" [(ngModel)]="newProduct.imageUrl" pInputText (input)="validateForm()" />
+            <small *ngIf="!newProduct.imageUrl" class="p-error">*</small>
+          </div>
+    </div> -->
+    <div class="p-fluid p-formgrid p-grid">
+        <div class="p-field p-col-12 p-md-6">
+          <label for="newId">ID</label>
+          <input id="newId" [(ngModel)]="newProduct.pId" pInputText (input)="validateForm()" class="p-inputtext p-component" />
+          <small *ngIf="!newProduct.pId" class="p-error">ID không được để trống</small>
+        </div>
+        <div class="p-field p-col-12 p-md-6">
+          <label for="newName">Product Name</label>
+          <input id="newName" [(ngModel)]="newProduct.name" pInputText (input)="validateForm()" class="p-inputtext p-component" />
+          <small *ngIf="!newProduct.name" class="p-error">Tên sản phẩm không được để trống</small>
+        </div>
+        <div class="p-field p-col-12 p-md-6">
+          <label for="newDescription">Description</label>
+          <input id="newDescription" [(ngModel)]="newProduct.description" pInputText (input)="validateForm()" class="p-inputtext p-component" />
+          <small *ngIf="!newProduct.description" class="p-error">Mô tả không được để trống</small>
+        </div>
+        <div class="p-field p-col-12 p-md-6">
+          <label for="newPrice">Price</label>
+          <input id="newPrice" [(ngModel)]="newProduct.price" pInputText type="number" (input)="validateForm()" class="p-inputtext p-component" />
+          <small *ngIf="!newProduct.price" class="p-error">Giá không được để trống</small>
+        </div>
+        <div class="p-field p-col-12 p-md-6">
+          <label for="newCategory">Category</label>
+          <input id="newCategory" [(ngModel)]="newProduct.category" pInputText (input)="validateForm()" class="p-inputtext p-component" />
+          <small *ngIf="!newProduct.category" class="p-error">Danh mục không được để trống</small>
+        </div>
+        <!-- <div class="p-field p-col-12 p-md-6">
+          <label for="newImageFile">Upload Image</label>
+          <input type="file" (change)="onFileSelected($event)" class="p-inputtext p-component" />
+          <small *ngIf="!selectedFile" class="p-error">Vui lòng chọn một ảnh để tải lên</small>
+        </div> -->
+        <div class="p-field p-col-12 p-md-6">
+          <label for="newImageFile">Upload Image</label>
+          <input
+            type="file"
+            (change)="onFileSelected($event)"
+            class="p-inputtext p-component"
+          />
+          <small *ngIf="!selectedFile" class="p-error">
+            Vui lòng chọn một ảnh để tải lên
+          </small>
+        </div>
+        
+        <div class="p-col-12">
+          <h3>Uploaded Image</h3>
+          <img
+            *ngIf="newProduct.imageUrl"
+            [src]="newProduct.imageUrl"
+            alt="Uploaded Image"
+            class="uploaded-image"
+          />
+        </div>
+        
+      </div> 
+
+    <p-footer>
+        <button pButton label="Cancel" icon="pi pi-times" (click)="closeCreateDialog()"></button>
+        <!-- <button pButton type="button" label="Create Product" icon="pi pi-check" (click)="createProduct()" [disabled]="!formValid"></button> -->
+        <button pButton type="button" label="Create Product" icon="pi pi-check" (click)="uplodadProduct()" [disabled]="!formValid"></button>
+    </p-footer>
+</p-dialog>
+
+<!-- Edit Product Dialog -->
+<p-dialog [(visible)]="editDialogVisible" [modal]="true" [closable]="false" [style]="{width: '50vw'}">
+    <p-header>
+        <span>Edit Product</span>
+    </p-header>
+
+    <div class="p-fluid">
+        <div class="p-field">
+            <label for="editId">ID</label>
+            <input id="editId" [(ngModel)]="editingProduct.pId" pInputText />
+        </div>
+        <div class="p-field">
+            <label for="editName">Product Name</label>
+            <input id="editName" [(ngModel)]="editingProduct.name" pInputText />
+        </div>
+        <div class="p-field">
+            <label for="editDescription">Description</label>
+            <input id="editDescription" [(ngModel)]="editingProduct.description" pInputText />
+        </div>
+        <div class="p-field">
+            <label for="editPrice">Price</label>
+            <input id="editPrice" [(ngModel)]="editingProduct.price" pInputText />
+        </div>
+        <div class="p-field">
+            <label for="editCategory">Category</label>
+            <input id="editCategory" [(ngModel)]="editingProduct.category" pInputText />
+        </div>
+        <div class="p-field">
+            <label for="editImageUrl">Image URL</label>
+            <input id="editImageUrl" [(ngModel)]="editingProduct.imageUrl" pInputText />
+        </div>
+    </div>
+
+    <p-footer>
+        <button pButton label="Cancel" icon="pi pi-times" (click)="closeEditDialog()"></button>
+        <button pButton label="Save" icon="pi pi-check" (click)="updateProduct()"></button>
+    </p-footer>
+</p-dialog>
